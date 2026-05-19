@@ -6,7 +6,7 @@ $nameError = $_SESSION["nameError"] ?? "";
 $emailError = $_SESSION["emailError"] ?? "";
 $phoneError = $_SESSION["phoneError"] ?? "";
 $passwordError = $_SESSION["passwordError"] ?? "";
-$confirmPasswordError = $_SESSION["confirm_password"] ?? "";
+$confirmPasswordError = $_SESSION["confirmPasswordError"] ?? "";
 $generalError  = $_SESSION["generalError"]  ?? "";
 
 $name = $_SESSION["name"] ?? "";
@@ -25,7 +25,7 @@ unset($_SESSION["nameError"]);
 unset($_SESSION["emailError"]);
 unset($_SESSION["phoneError"]);
 unset($_SESSION["passwordError"]);
-unset($_SESSION["confirm_password"]);
+unset($_SESSION["confirmPasswordError"]);
 unset($_SESSION["generalError"] );
 
 unset($_SESSION["name"]);
@@ -46,7 +46,7 @@ unset($_SESSION["phone"]);
             <h1>Create Account</h1>
             <?php if ($generalError): ?><p style="color:red;"><?php echo $generalError; ?></p><?php endif; ?>
         </div>
-        <form id="registerForm" method="POST" action="../Controller/registerHandler.php" enctype="multipart/form-data" >
+        <form id="registerForm" method="POST" action="../Controller/registerHandler.php" >
             <!-- Full Name -->
             <div class="form-group">
                 <label>Full Name <span class="required">*</span></label>
@@ -59,6 +59,7 @@ unset($_SESSION["phone"]);
                 <label>Email Address <span class="required">*</span></label>
                 <input type="email" id="email" name="email" onkeyup="checkEmail()" value="<?php echo $email ?>" placeholder="Enter your Email" />
                  <label style="color:red" class="error-msg" id="emailError"><?php echo $emailError; ?></label>
+                 <span id="emailAvailability"></span>
             </div>
 
             <!-- Phone -->
@@ -68,21 +69,19 @@ unset($_SESSION["phone"]);
                 <label style="color:red" class="error-msg" id="phoneError"><?php echo $phoneError; ?></label>
             </div>
             <!-- Password -->
-            <div class="form-group <?= isset($errors['password']) ? 'has-error' : '' ?>">
+            <div class="form-group">
                 <label>Password <span class="required">*</span></label>
                 <div class="input-icon-wrap">
                     <input type="password" id="password" name="password" placeholder="Minimum 8 characters" />
-                    <button type="button" class="toggle-pw" data-target="password" title="Show/Hide">👁</button>
                 </div>
                 <label style="color:red" class="error-msg" id="passwordError"><?php echo $passwordError; ?></label>
             </div>
 
             <!-- Confirm Password -->
-            <div class="form-group <?= isset($errors['confirm_password']) ? 'has-error' : '' ?>">
+            <div class="form-group">
                 <label for="confirm_password">Confirm Password <span class="required">*</span></label>
                 <div class="input-icon-wrap">
                     <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter your password" />
-                    <button type="button" class="toggle-pw" data-target="confirm_password" title="Show/Hide">👁</button>
                 </div>
                 <label style="color:red" class="error-msg" id="confirmError"><?php echo $confirmPasswordError; ?></label>
             </div>
