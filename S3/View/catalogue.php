@@ -1,10 +1,15 @@
 <?php
-/**
- * View/catalogue.php — Product Catalogue (Task 3, Req 1)
- * Shows all available products. AJAX search + AJAX category filter.
- */
+
 session_start();
 require_once "../Model/DatabaseConnection.php";
+
+
+//////////////////// Demo User for testing 
+$_SESSION['user_id'] = 1;
+$_SESSION['name']    = "John Doe";
+$_SESSION['cart']  = $_SESSION['cart'] ?? [];
+
+//////////////////// 
 
 $db         = new DatabaseConnection();
 $connection = $db->openConnection();
@@ -41,7 +46,7 @@ $cartCount = isset($_SESSION['cart']) ? array_sum($_SESSION['cart']) : 0;
         <a href="catalogue.php">Shop</a>
         <?php if (!empty($_SESSION['user_id'])): ?>
             <a href="cart.php" class="cart-icon">
-                🛒 <span class="cart-badge" id="cart-count"><?= $cartCount ?></span>
+            🛒 <span class="cart-badge" id="cart-count"><?= $cartCount ?></span>
             </a>
             <a href="#">Hi, <?= htmlspecialchars($_SESSION['name'] ?? 'User') ?></a>
             <a href="../Controller/logout.php">Logout</a>
@@ -103,6 +108,8 @@ $cartCount = isset($_SESSION['cart']) ? array_sum($_SESSION['cart']) : 0;
 
 <div id="toast" class="toast"></div>
 <script src="../Controller/JS/search.js"></script>
+<script src="../Controller/JS/search.js"></script>
+<script src="../Controller/JS/addToCart.js"></script>
 </body>
 </html>
 <?php $connection->close(); ?>

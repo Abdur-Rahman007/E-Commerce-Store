@@ -147,6 +147,32 @@ class DatabaseConnection{
 }
 
 
+function getCartProducts($connection, array $product_ids) {
+    if (empty($product_ids)) return [];
+
+    $placeholders = implode(",", array_fill(0, count($product_ids), "?"));
+    $types        = str_repeat("i", count($product_ids));
+
+    $sql  = "SELECT p.*, c.name AS category_name
+             FROM products p
+             LEFT JOIN categories c ON p.category_id = c.id
+             WHERE p.id IN ($placeholders)";
+
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param($types, ...$product_ids);
+    $stmt->execute();
+
+    $result   = $stmt->get_result();
+    $products = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $products[$row['id']] = $row;
+    }
+
+    return $products;
+}
+
+
     function getProductById($connection, $product_id) {
 
         $sql = "SELECT 
@@ -190,6 +216,63 @@ class DatabaseConnection{
 
         return $stmt->get_result();
     }
+
+    function createOrder($connection, $user_id, $shipping_address, $payment_method, $total_amount) {
+    $sql  = "INSERT INTO orders (user_id, shipping_address, payment_method, total_amount, status, created_at) 
+             VALUES (?, ?, ?, ?, 'Pending', NOW())";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("issd", $user_id, $shipping_address, $payment_method, $total_amount);
+    $stmt->execute();
+    return $stmt->insert_id;
+}
+
+    function getUserById($connection, $user_id) {
+    $sql  = "SELECT id, name, email, phone, shipping_addresses 
+             FROM users 
+             WHERE id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    return $stmt->get_result();
+}
+
+function createOrderItem($connection, $order_id, $product_id, $quantity, $unit_price) {
+    $sql  = "INSERT INTO order_items (order_id, product_id, quantity, unit_price) 
+             VALUES (?, ?, ?, ?)";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("iiid", $order_id, $product_id, $quantity, $unit_price);
+    $stmt->execute();
+}
+
+function decrementStock($connection, $product_id, $quantity) {
+    $sql  = "UPDATE products 
+             SET stock_qty = stock_qty - ? 
+             WHERE id = ? AND stock_qty >= ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("iii", $quantity, $product_id, $quantity);
+    $stmt->execute();
+    return $stmt->affected_rows;
+}
+
+function getOrderWithItems($connection, $order_id) {
+    $sql  = "SELECT o.*, 
+                    oi.quantity, 
+                    oi.unit_price,
+                    p.name AS product_name, 
+                    p.primary_image_path,
+                    u.id AS user_id
+             FROM orders o
+             JOIN order_items oi ON oi.order_id = o.id
+             JOIN products    p  ON p.id = oi.product_id
+             JOIN users       u  ON u.id = o.user_id
+             WHERE o.id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $order_id);
+    $stmt->execute();
+    return $stmt->get_result();
+}
+
+
 
 
     function closeConnection($connection) {
