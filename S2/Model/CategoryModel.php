@@ -19,7 +19,6 @@ class CategoryModel{
     }
 
     function addCategory($connection, $name, $parent_id){
-        $name = $connection->real_escape_string($name);
         $parentValue = $parent_id ? "'".$parent_id."'" : "NULL";
         $sql = "INSERT INTO categories (name, parent_id) VALUES('".$name."', ".$parentValue.")";
         $result = $connection->query($sql);
@@ -27,7 +26,6 @@ class CategoryModel{
     }
 
     function updateCategory($connection, $id, $name, $parent_id){
-        $name = $connection->real_escape_string($name);
         $parentValue = $parent_id ? "'".$parent_id."'" : "NULL";
         $sql = "UPDATE categories SET name='".$name."', parent_id=".$parentValue." WHERE id='".$id."'";
         $result = $connection->query($sql);
