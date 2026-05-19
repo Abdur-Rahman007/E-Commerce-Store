@@ -71,11 +71,11 @@ if (!$password) {
 
 if (!$confirm) {
     $hasConfirmPasswordError = true;
-    $_SESSION["confirm_password"] = "Please confirm your password";
+    $_SESSION["confirmPasswordError"] = "Please confirm your password";
 } else{
     if ($password !== $confirm) {
         $hasConfirmPasswordError = true;
-        $_SESSION["confirm_password"]  = "Passwords do not match";
+        $_SESSION["confirmPasswordError"]  = "Passwords do not match";
     }
     else{
         $hasConfirmPasswordError = false;
