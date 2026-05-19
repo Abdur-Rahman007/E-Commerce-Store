@@ -1,31 +1,20 @@
 <?php
-/**
- * Controller/API/search.php
- * Receives POST: keyword
- * Returns JSON: { products: [...] } or { error: "..." }
- */
 header("Content-Type: application/json");
 
-require_once "../../Model/DatabaseConnection.php";
+require_once "../Model/DatabaseConnection.php";
 
-$keyword = isset($_POST["keyword"]) ? trim($_POST["keyword"]) : "";
+$keyword     = isset($_POST["keyword"])     ? trim($_POST["keyword"])       : "";
+$category_id = isset($_POST["category_id"]) ? intval($_POST["category_id"]) : 0;
 
 $db         = new DatabaseConnection();
 $connection = $db->openConnection();
 
-if ($keyword === "") {
-    // Empty search → return all available products
-    $result = $db->getAvailableProducts($connection);
-} else {
-    $result = $db->searchProducts($connection, $keyword);
-}
-
+$result   = $db->searchAndFilterProducts($connection, $keyword, $category_id);
 $products = [];
 while ($row = $result->fetch_assoc()) {
     $products[] = $row;
 }
 
 echo json_encode(["products" => $products]);
-
 $connection->close();
 ?>

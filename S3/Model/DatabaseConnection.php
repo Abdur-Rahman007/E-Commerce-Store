@@ -93,35 +93,58 @@ class DatabaseConnection{
     }
 
 
-    function getProductsByCategory($connection, $category_id) {
+    function searchAndFilterProducts($connection, $keyword, $category_id) {
+    $sql = "SELECT p.*, c.name AS category_name,
+                   ROUND(IFNULL(AVG(r.rating), 0), 1) AS avg_rating,
+                   COUNT(r.id) AS review_count
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN reviews    r ON r.product_id  = p.id
+            WHERE p.is_available = 1";
 
-        $sql = "SELECT 
-                    p.*, 
-                    c.name AS category_name,
-                    ROUND(IFNULL(AVG(r.rating), 0), 1) AS avg_rating,
-                    COUNT(r.id) AS review_count
-                FROM products p
-                LEFT JOIN categories c 
-                    ON p.category_id = c.id
-                LEFT JOIN reviews r 
-                    ON r.product_id = p.id
-                WHERE p.is_available = 1
-                AND p.category_id = ?
-                GROUP BY p.id
-                ORDER BY p.created_at DESC";
-
-        $stmt = $connection->prepare($sql);
-
-        if (!$stmt) {
-            die("Prepare Failed: " . $connection->error);
-        }
-
-        $stmt->bind_param("i", $category_id);
-
-        $stmt->execute();
-
-        return $stmt->get_result();
+    if ($keyword !== "" && $category_id > 0) {
+        $sql .= " AND (p.name LIKE ? OR p.description LIKE ?) AND p.category_id = ?";
+    } elseif ($keyword !== "") {
+        $sql .= " AND (p.name LIKE ? OR p.description LIKE ?)";
+    } elseif ($category_id > 0) {
+        $sql .= " AND p.category_id = ?";
     }
+
+    $sql .= " GROUP BY p.id ORDER BY p.created_at DESC";
+
+    $stmt = $connection->prepare($sql);
+
+    if ($keyword !== "" && $category_id > 0) {
+        $like = "%" . $keyword . "%";
+        $stmt->bind_param("ssi", $like, $like, $category_id);
+    } elseif ($keyword !== "") {
+        $like = "%" . $keyword . "%";
+        $stmt->bind_param("ss", $like, $like);
+    } elseif ($category_id > 0) {
+        $stmt->bind_param("i", $category_id);
+    }
+
+    $stmt->execute();
+    return $stmt->get_result();
+}
+
+    function getProductsByCategory($connection, $category_id) {
+    $sql = "SELECT p.*, c.name AS category_name,
+                   ROUND(IFNULL(AVG(r.rating), 0), 1) AS avg_rating,
+                   COUNT(r.id) AS review_count
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN reviews   r ON r.product_id = p.id
+            WHERE p.is_available = 1
+              AND p.category_id = ?
+            GROUP BY p.id
+            ORDER BY p.created_at DESC";
+
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $category_id);
+    $stmt->execute();
+    return $stmt->get_result();
+}
 
 
     function getProductById($connection, $product_id) {

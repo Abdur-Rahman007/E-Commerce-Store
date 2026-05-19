@@ -1,251 +1,351 @@
-/* =========================
-   GLOBAL RESET
-========================= */
-* {
+/* =====================================================
+   S3 / View / CSS / style.css
+   Styles for: catalogue.php
+   ===================================================== */
+
+/* ── Reset & Base ──────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
 body {
-    background: #f5f6f8;
-    color: #222;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+    min-height: 100vh;
 }
 
-/* =========================
-   NAVBAR
-========================= */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 25px;
-    background: #1e1e2f;
-    color: white;
-}
-
-.brand {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.nav-links a {
-    color: white;
-    margin-left: 15px;
+a {
     text-decoration: none;
-    font-size: 14px;
+    color: inherit;
 }
 
-.nav-links a:hover {
-    opacity: 0.8;
+/* ── Navbar ────────────────────────────────────────── */
+.navbar {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 0 2rem;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
-/* CART BADGE */
+.navbar .brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #e94560;
+    letter-spacing: 1px;
+}
+
+.navbar .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.navbar .nav-links a {
+    color: #ccc;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.navbar .nav-links a:hover {
+    color: #fff;
+}
+
+/* Cart icon inside navbar */
 .cart-icon {
     position: relative;
+    font-size: 1.3rem;
+    color: #fff !important;
+    cursor: pointer;
 }
 
 .cart-badge {
-    background: red;
-    color: white;
-    font-size: 12px;
-    padding: 2px 6px;
-    border-radius: 50%;
-    position: relative;
+    position: absolute;
     top: -8px;
-    left: -5px;
+    right: -10px;
+    background: #e94560;
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* =========================
-   CONTAINER
-========================= */
+/* ── Page Container ────────────────────────────────── */
 .container {
     max-width: 1200px;
-    margin: 20px auto;
-    padding: 0 15px;
+    margin: 2rem auto;
+    padding: 0 1.2rem;
 }
 
+/* ── Page Title ────────────────────────────────────── */
 .page-title {
-    margin-bottom: 20px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1.4rem;
+    padding-left: 0.8rem;
+    border-left: 4px solid #e94560;
 }
 
-/* =========================
-   FILTER BAR
-========================= */
+/* ── Filter Bar ────────────────────────────────────── */
 .filter-bar {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 1.8rem;
 }
 
-.filter-bar input,
-.filter-bar select {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    width: 100%;
+.filter-bar input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.6rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
     outline: none;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.filter-bar input:focus,
+.filter-bar input[type="text"]:focus {
+    border-color: #e94560;
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.12);
+}
+
+.filter-bar select {
+    padding: 0.6rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-width: 170px;
+}
+
 .filter-bar select:focus {
-    border-color: #4a90e2;
+    border-color: #e94560;
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.12);
 }
 
-/* =========================
-   PRODUCT GRID
-========================= */
+/* ── Product Grid ──────────────────────────────────── */
 #product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
+    gap: 1.4rem;
 }
 
-/* =========================
-   PRODUCT CARD
-========================= */
+/* ── Product Card ──────────────────────────────────── */
 .product-card {
-    background: white;
-    border-radius: 10px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .product-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.13);
 }
 
+/* Product image */
 .product-card img {
     width: 100%;
-    height: 180px;
+    height: 185px;
     object-fit: cover;
+    display: block;
+    background: #eee;
 }
 
-.no-img {
-    height: 180px;
+/* Placeholder when no image */
+.product-card .no-img {
+    width: 100%;
+    height: 185px;
+    background: #e8e8e8;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background: #ddd;
-    color: #666;
+    justify-content: center;
+    color: #aaa;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
 }
 
-/* =========================
-   CARD BODY
-========================= */
-.card-body {
-    padding: 12px;
+/* Card body */
+.product-card .card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.35rem;
 }
 
 .card-category {
-    font-size: 12px;
-    color: #777;
-    margin-bottom: 5px;
+    font-size: 0.75rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
 }
 
 .card-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* =========================
-   RATING
-========================= */
 .card-rating {
-    font-size: 13px;
+    font-size: 0.82rem;
     color: #555;
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+}
+
+.card-rating span {
+    color: #999;
 }
 
 .stars {
-    color: gold;
+    color: #f5a623;
 }
 
 .stars-empty {
-    color: #ccc;
+    color: #ddd;
 }
 
-/* =========================
-   PRICE
-========================= */
 .card-price {
-    font-size: 16px;
-    font-weight: bold;
-    color: #1e7e34;
-    margin-bottom: 10px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #e94560;
+    margin-top: auto;
+    padding-top: 0.4rem;
 }
 
-/* =========================
-   BUTTONS
-========================= */
+/* ── Buttons ───────────────────────────────────────── */
 .btn {
-    padding: 8px 10px;
+    display: inline-block;
+    padding: 0.55rem 1rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 7px;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
+    text-align: center;
+    transition: background 0.2s, transform 0.1s, opacity 0.2s;
     width: 100%;
-    font-size: 14px;
-    transition: 0.3s;
+    margin-top: 0.5rem;
+}
+
+.btn:active {
+    transform: scale(0.97);
 }
 
 .btn-primary {
-    background: #4a90e2;
-    color: white;
+    background: #e94560;
+    color: #fff;
 }
 
 .btn-primary:hover {
-    background: #357bd8;
+    background: #c73652;
+}
+
+.btn-primary:disabled {
+    background: #e94560;
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .btn-disabled {
     background: #ccc;
-    color: #666;
+    color: #888;
     cursor: not-allowed;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.55rem 1rem;
+    border: none;
+    border-radius: 7px;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
-/* =========================
-   TOAST MESSAGE
-========================= */
+/* ── Toast Notification ────────────────────────────── */
 .toast {
     position: fixed;
-    bottom: 25px;
-    right: 25px;
-    background: #333;
-    color: white;
-    padding: 12px 18px;
+    bottom: 1.8rem;
+    right: 1.8rem;
+    background: #1a1a2e;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
     border-radius: 8px;
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.3s;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
     z-index: 9999;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
 }
 
 .toast.show {
     opacity: 1;
-    visibility: visible;
+    transform: translateY(0);
 }
 
-.toast.success {
-    background: #28a745;
-}
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 600px) {
+    .navbar {
+        padding: 0 1rem;
+    }
 
-.toast.error {
-    background: #dc3545;
-}
+    .navbar .brand {
+        font-size: 1.1rem;
+    }
 
-/* =========================
-   RESPONSIVE
-========================= */
-@media (max-width: 768px) {
+    .navbar .nav-links {
+        gap: 0.8rem;
+        font-size: 0.85rem;
+    }
+
     .filter-bar {
         flex-direction: column;
     }
 
+    .filter-bar input[type="text"],
+    .filter-bar select {
+        width: 100%;
+    }
+
+    #product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+
     .product-card img,
-    .no-img {
-        height: 160px;
+    .product-card .no-img {
+        height: 145px;
     }
 }
