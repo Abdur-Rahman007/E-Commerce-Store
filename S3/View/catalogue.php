@@ -15,6 +15,15 @@ $initialProducts = [];
 while ($row = $productsResult->fetch_assoc()) {
     $initialProducts[] = $row;
 }
+
+// Attach avg rating to each product
+foreach ($initialProducts as &$p) {
+    $ratingData       = $db->getAvgRating($connection, $p['id']);
+    $p['avg_rating']  = $ratingData['avg_rating']  ?? 0;
+    $p['review_count'] = $ratingData['review_count'] ?? 0;
+}
+unset($p); // break reference
+
 $categories = [];
 while ($row = $categoriesResult->fetch_assoc()) {
     $categories[] = $row;
