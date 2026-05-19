@@ -41,6 +41,19 @@ class DatabaseConnection{
         return $stmt->get_result();
     }
 
+    function getAvgRating($connection, $product_id) {
+    $sql  = "SELECT ROUND(AVG(rating), 1) AS avg_rating, 
+                    COUNT(id) AS review_count
+             FROM reviews
+             WHERE product_id = ?";
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row    = $result->fetch_assoc();
+    return $row;
+}
+
     public function getProductStock($connection, $product_id) {
 
     $sql = "SELECT stock_qty, is_available 
