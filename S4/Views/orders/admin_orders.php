@@ -1,144 +1,405 @@
-<?php require_once '../../config/helpers.php'; ?>
+<?php
+
+require_once '../../config/database.php';
+require_once '../../config/helpers.php';
+
+/*
+|--------------------------------------------------------------------------
+| UPDATE STATUS
+|--------------------------------------------------------------------------
+*/
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['new_status'])) {
+
+    $orderId    = $_POST['order_id'];
+    $newStatus  = $_POST['new_status'];
+
+    $update = $pdo->prepare("
+        UPDATE orders 
+        SET status = ?
+        WHERE id = ?
+    ");
+
+    $update->execute([$newStatus, $orderId]);
+
+    header("Location: adminOrder.php");
+    exit;
+}
+
+/*
+|--------------------------------------------------------------------------
+| FILTERS
+|--------------------------------------------------------------------------
+*/
+
+$status = $_GET['status'] ?? '';
+$from   = $_GET['from'] ?? '';
+$to     = $_GET['to'] ?? '';
+
+/*
+|--------------------------------------------------------------------------
+| QUERY
+|--------------------------------------------------------------------------
+*/
+
+$sql = "
+SELECT 
+    orders.id,
+    orders.total_amount,
+    orders.status,
+    orders.created_at,
+    users.name
+FROM orders
+LEFT JOIN users 
+    ON orders.user_id = users.id
+WHERE 1=1
+";
+
+$params = [];
+
+/* Status Filter */
+if (!empty($status)) {
+    $sql .= " AND orders.status = ?";
+    $params[] = $status;
+}
+
+/* From Date */
+if (!empty($from)) {
+    $sql .= " AND DATE(orders.created_at) >= ?";
+    $params[] = $from;
+}
+
+/* To Date */
+if (!empty($to)) {
+    $sql .= " AND DATE(orders.created_at) <= ?";
+    $params[] = $to;
+}
+
+$sql .= " ORDER BY orders.id DESC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+
+$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Admin Orders</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../public/css/style.css">
+
+    <style>
+
+        body{
+            background:#f5f6fa;
+        }
+
+        .sidebar{
+            min-height:100vh;
+        }
+
+        .table td,
+        .table th{
+            vertical-align:middle;
+        }
+
+    </style>
+
 </head>
 
 <body>
 
 <div class="container-fluid">
+
     <div class="row">
 
         <!-- Sidebar -->
-        <div class="col-md-2 sidebar bg-dark text-white p-4 min-vh-100">
-            <h4>Admin Panel</h4>
-            <ul class="nav flex-column mt-4">
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">Dashboard</a>
+        <div class="col-md-2 bg-dark text-white p-4 sidebar">
+
+            <h3 class="mb-4">Admin Panel</h3>
+
+            <ul class="nav flex-column">
+
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link text-white">
+                        Dashboard
+                    </a>
                 </li>
+
                 <li class="nav-item">
-                    <a href="#" class="nav-link text-white fw-bold">Orders</a>
+                    <a href="#" class="nav-link text-white fw-bold">
+                        Orders
+                    </a>
                 </li>
+
             </ul>
+
         </div>
 
         <!-- Main Content -->
         <div class="col-md-10 p-4">
 
-            <h2 class="mb-4">All Orders</h2>
+            <h2 class="mb-4">
+                All Orders
+            </h2>
 
-            <!-- ─── FIX: Filter form was missing — controller reads $_GET['status'], 'from', 'to'] but there was no UI for it ─── -->
-            <div class="card mb-4 shadow-sm">
+            <!-- FILTER -->
+            <div class="card shadow-sm mb-4">
+
                 <div class="card-body">
-                    <form method="GET" class="row g-3 align-items-end">
+
+                    <form method="GET" class="row g-3">
+
                         <div class="col-md-3">
-                            <label class="form-label fw-semibold">Status</label>
+
+                            <label class="form-label">
+                                Status
+                            </label>
+
                             <select name="status" class="form-select">
-                                <option value="">All Statuses</option>
+
+                                <option value="">
+                                    All
+                                </option>
+
                                 <?php foreach (['Pending','Processing','Shipped','Delivered','Cancelled'] as $s): ?>
-                                    <option value="<?= $s ?>" <?= (($_GET['status'] ?? '') === $s) ? 'selected' : '' ?>>
+
+                                    <option value="<?= $s ?>"
+                                        <?= ($status === $s) ? 'selected' : '' ?>>
+
                                         <?= $s ?>
+
                                     </option>
+
                                 <?php endforeach; ?>
+
                             </select>
+
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label fw-semibold">From Date</label>
-                            <input type="date" name="from" class="form-control"
-                                   value="<?= e($_GET['from'] ?? '') ?>">
+
+                            <label class="form-label">
+                                From Date
+                            </label>
+
+                            <input type="date"
+                                   name="from"
+                                   class="form-control"
+                                   value="<?= e($from) ?>">
+
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label fw-semibold">To Date</label>
-                            <input type="date" name="to" class="form-control"
-                                   value="<?= e($_GET['to'] ?? '') ?>">
+
+                            <label class="form-label">
+                                To Date
+                            </label>
+
+                            <input type="date"
+                                   name="to"
+                                   class="form-control"
+                                   value="<?= e($to) ?>">
+
                         </div>
 
-                        <div class="col-md-3 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary w-100">Filter</button>
-                            <a href="?" class="btn btn-outline-secondary w-100">Reset</a>
+                        <div class="col-md-3 d-flex align-items-end gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-primary w-100">
+
+                                Filter
+
+                            </button>
+
+                            <a href="adminOrder.php"
+                               class="btn btn-secondary w-100">
+
+                                Reset
+
+                            </a>
+
                         </div>
+
                     </form>
+
                 </div>
+
             </div>
 
-            <table class="table table-bordered table-hover bg-white shadow-sm">
+            <!-- TABLE -->
+            <div class="card shadow-sm">
 
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Customer</th>
-                        <th>Total</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Update Status</th>
-                    </tr>
-                </thead>
+                <div class="card-body">
 
-                <tbody>
+                    <table class="table table-bordered table-hover">
 
-                <?php if (!empty($orders)): ?>
+                        <thead class="table-dark">
 
-                    <?php foreach ($orders as $order): ?>
+                            <tr>
 
-                        <tr>
-                            <td>#<?= e($order['id']) ?></td>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Update Status</th>
 
-                            <td><?= e($order['name']) ?></td>
+                            </tr>
 
-                            <td>৳<?= number_format(e($order['total_amount']), 2) ?></td>
+                        </thead>
 
-                            <td><?= e(date('d M Y', strtotime($order['created_at']))) ?></td>
+                        <tbody>
 
-                            <td>
-                                <span class="badge bg-<?= badgeColor($order['status']) ?>">
-                                    <?= e($order['status']) ?>
-                                </span>
-                            </td>
+                        <?php if (!empty($orders)): ?>
 
-                            <td>
-                                <!-- ─── FIX: Added data-current so JS can revert on error ─── -->
-                                <select class="form-select form-select-sm status-dropdown"
-                                        data-id="<?= e($order['id']) ?>"
-                                        data-current="<?= e($order['status']) ?>">
-                                    <?php foreach (['Pending','Processing','Shipped','Delivered','Cancelled'] as $s): ?>
-                                        <option value="<?= $s ?>"
-                                            <?= $order['status'] === $s ? 'selected' : '' ?>>
-                                            <?= $s ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </td>
-                        </tr>
+                            <?php foreach ($orders as $order): ?>
 
-                    <?php endforeach; ?>
+                                <tr>
 
-                <?php else: ?>
+                                    <td>
+                                        #<?= e($order['id']) ?>
+                                    </td>
 
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            No orders found.
-                        </td>
-                    </tr>
+                                    <td>
+                                        <?= e($order['name']) ?>
+                                    </td>
 
-                <?php endif; ?>
+                                    <td>
+                                        ৳<?= number_format($order['total_amount'], 2) ?>
+                                    </td>
 
-                </tbody>
-            </table>
+                                    <td>
+
+                                        <?php
+
+                                        echo !empty($order['created_at'])
+                                            ? date('d M Y', strtotime($order['created_at']))
+                                            : 'N/A';
+
+                                        ?>
+
+                                    </td>
+
+                                    <td>
+
+                                        <?php
+
+                                        $badge = 'secondary';
+
+                                        switch ($order['status']) {
+
+                                            case 'Pending':
+                                                $badge = 'warning';
+                                                break;
+
+                                            case 'Processing':
+                                                $badge = 'info';
+                                                break;
+
+                                            case 'Shipped':
+                                                $badge = 'primary';
+                                                break;
+
+                                            case 'Delivered':
+                                                $badge = 'success';
+                                                break;
+
+                                            case 'Cancelled':
+                                                $badge = 'danger';
+                                                break;
+                                        }
+
+                                        ?>
+
+                                        <span class="badge bg-<?= $badge ?>">
+
+                                            <?= e($order['status']) ?>
+
+                                        </span>
+
+                                    </td>
+
+                                    <!-- UPDATE STATUS -->
+                                    <td>
+
+                                        <form method="POST">
+
+                                            <input type="hidden"
+                                                   name="order_id"
+                                                   value="<?= $order['id'] ?>">
+
+                                            <div class="d-flex gap-2">
+
+                                                <select name="new_status"
+                                                        class="form-select form-select-sm">
+
+                                                    <?php foreach (['Pending','Processing','Shipped','Delivered','Cancelled'] as $s): ?>
+
+                                                        <option value="<?= $s ?>"
+                                                            <?= ($order['status'] === $s) ? 'selected' : '' ?>>
+
+                                                            <?= $s ?>
+
+                                                        </option>
+
+                                                    <?php endforeach; ?>
+
+                                                </select>
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-success">
+
+                                                    Update
+
+                                                </button>
+
+                                            </div>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        <?php else: ?>
+
+                            <tr>
+
+                                <td colspan="6" class="text-center py-4">
+
+                                    No Orders Found
+
+                                </td>
+
+                            </tr>
+
+                        <?php endif; ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
 
         </div>
+
     </div>
+
 </div>
 
-<script src="../../public/js/orders.js"></script>
-
 </body>
+
 </html>
