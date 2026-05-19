@@ -45,5 +45,13 @@ class DatabaseConnection {
         $result = $connection->query($sql);
         return $result;
     }
+
+    function clearRememberToken($connection, $userId) {
+        $sql    = "UPDATE users SET remember_token=NULL WHERE id='" . $userId . "'";
+        $result = $connection->query($sql);
+        return $result;
+    }
+
+
 }
 ?>
