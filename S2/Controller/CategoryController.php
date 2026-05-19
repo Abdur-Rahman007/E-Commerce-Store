@@ -1,5 +1,5 @@
 <?php
-include "../model/categoryModel.php";
+include "../model/CategoryModel.php";
 session_start();
 
 $db = new DatabaseConnection();
@@ -39,7 +39,6 @@ if($action == "save"){
     exit();
 }
 
-
 if($action == "delete"){
     $id = $_GET["id"] ?? "";
     if($id){
@@ -53,4 +52,5 @@ if($action == "delete"){
 
 Header("Location: ../view/admin/categories/categoryList.php");
 exit();
+
 ?>

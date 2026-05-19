@@ -1,5 +1,5 @@
 <?php
-include "db.php";
+include_once "db.php";
 
 class ProductModel{
     function getAllProducts($connection){
@@ -54,6 +54,25 @@ class ProductModel{
         $sql = "DELETE FROM products WHERE id='".$id."'";
         $result = $connection->query($sql);
         return $result;
+    }
+
+    function toggleProductAvailability($connection, $id){
+        $sql = "SELECT is_available FROM products WHERE id='".$id."'";
+        $result = $connection->query($sql);
+
+        if($result && $result->num_rows == 1){
+            $row = $result->fetch_assoc();
+            $newAvailability = $row["is_available"] ? 0 : 1;
+
+            $sql = "UPDATE products SET is_available='".$newAvailability."' WHERE id='".$id."'";
+            $result = $connection->query($sql);
+
+            if($result){
+                return $newAvailability;
+            }
+        }
+
+        return "error";
     }
 }
 

@@ -16,6 +16,19 @@ else{
     $action = "list";
 }
 
+if($action == "toggleAvailability"){
+    $id = $_POST["id"] ?? "";
+
+    if($id){
+        $result = $productModel->toggleProductAvailability($connection, $id);
+        echo $result;
+        exit();
+    }
+
+    echo "error";
+    exit();
+}
+
 if($action == "save"){
     $id = $_POST["id"] ?? "";
     $category_id = $_POST["category_id"] ?? "";
