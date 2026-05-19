@@ -65,9 +65,9 @@ unset($_SESSION["loginOldEmail"]);
 
 
 if ($user["role"] === "admin") {
-    header("Location: ../View/admin_dashboard.php");
+    header("Location: ../../S2/View/admin/dashboard.php");
 } else {
-    header("Location: ../View/catalogue.php");
+    header("Location: ../../S3/View/catalogue.php");
 }
 exit();
 ?>

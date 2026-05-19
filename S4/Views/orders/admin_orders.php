@@ -3,12 +3,6 @@
 require_once '../../config/database.php';
 require_once '../../config/helpers.php';
 
-/*
-|--------------------------------------------------------------------------
-| UPDATE STATUS
-|--------------------------------------------------------------------------
-*/
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['new_status'])) {
 
     $orderId    = $_POST['order_id'];
@@ -26,21 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['n
     exit;
 }
 
-/*
-|--------------------------------------------------------------------------
-| FILTERS
-|--------------------------------------------------------------------------
-*/
-
 $status = $_GET['status'] ?? '';
 $from   = $_GET['from'] ?? '';
 $to     = $_GET['to'] ?? '';
-
-/*
-|--------------------------------------------------------------------------
-| QUERY
-|--------------------------------------------------------------------------
-*/
 
 $sql = "
 SELECT 
@@ -57,19 +39,18 @@ WHERE 1=1
 
 $params = [];
 
-/* Status Filter */
+
 if (!empty($status)) {
     $sql .= " AND orders.status = ?";
     $params[] = $status;
 }
 
-/* From Date */
+
 if (!empty($from)) {
     $sql .= " AND DATE(orders.created_at) >= ?";
     $params[] = $from;
 }
 
-/* To Date */
 if (!empty($to)) {
     $sql .= " AND DATE(orders.created_at) <= ?";
     $params[] = $to;

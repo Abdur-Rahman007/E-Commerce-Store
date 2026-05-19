@@ -4,13 +4,6 @@ session_start();
 require_once "../Model/DatabaseConnection.php";
 
 
-//////////////////// Demo User for testing 
-$_SESSION['user_id'] = 1;
-$_SESSION['name']    = "John Doe";
-$_SESSION['cart']  = $_SESSION['cart'] ?? [];
-
-//////////////////// 
-
 $db         = new DatabaseConnection();
 $connection = $db->openConnection();
 
@@ -43,13 +36,13 @@ $cartCount = isset($_SESSION['cart']) ? array_sum($_SESSION['cart']) : 0;
 <nav class="navbar">
     <span class="brand">🛍 EStore</span>
     <div class="nav-links">
-        <a href="catalogue.php">Shop</a>
+        <a href="../../S4/Views/orders/my_orders.php">My Orders</a>
         <?php if (!empty($_SESSION['user_id'])): ?>
             <a href="cart.php" class="cart-icon">
             🛒 <span class="cart-badge" id="cart-count"><?= $cartCount ?></span>
             </a>
-            <a href="#">Hi, <?= htmlspecialchars($_SESSION['name'] ?? 'User') ?></a>
-            <a href="../Controller/logout.php">Logout</a>
+            <a href="../../S1/View/profile.php">Hi, <?= htmlspecialchars($_SESSION['name'] ?? 'User') ?></a>
+            <a href="../../S1/Controller/logout.php">Logout</a>
         <?php else: ?>
             <a href="login.php">Login</a>
         <?php endif; ?>

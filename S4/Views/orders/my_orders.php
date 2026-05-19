@@ -1,37 +1,12 @@
 <?php
-
 require_once '../../config/database.php';
 require_once '../../config/helpers.php';
-
-/*
-|--------------------------------------------------------------------------
-| START SESSION
-|--------------------------------------------------------------------------
-*/
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-/*
-|--------------------------------------------------------------------------
-| USER ID
-|--------------------------------------------------------------------------
-| For demo/testing use:
-| $userId = 1;
-|
-| For real login system use:
-| $userId = $_SESSION['user']['id'];
-|--------------------------------------------------------------------------
-*/
-
-$userId = 1;
-
-/*
-|--------------------------------------------------------------------------
-| FETCH USER ORDERS
-|--------------------------------------------------------------------------
-*/
+$userId = $_SESSION["user_id"];
 
 $sql = "
 SELECT 
@@ -87,6 +62,14 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
+    <nav class="navbar">
+    <div class="nav-brand">🛍 EStore</div>
+    <div class="nav-links">
+        <a href="../../../S3/View/catalogue.php">Go To Shop</a>
+        <a href="../../../S1/View/profile.php" class="active">My Profile</a>
+        <a href="../../../S1/Controller/logout.php" class="btn btn-sm btn-outline">Logout</a>
+    </div>
+</nav>
 
 <div class="container py-5">
 
@@ -100,11 +83,6 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <?php
 
-            /*
-            |--------------------------------------------------------------------------
-            | BADGE COLOR
-            |--------------------------------------------------------------------------
-            */
 
             $badge = 'secondary';
 

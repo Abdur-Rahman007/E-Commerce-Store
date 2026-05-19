@@ -52,17 +52,17 @@ unset( $_SESSION["profileOldAddr2"]);
 
 <html>
 <head>
-    <title>My Profile — E-Commerce Store</title>
+    <title>My Profile</title>
     <link rel="stylesheet" href="CSS/style.css" />
 </head>
 <body class="dashboard-page">
 
 <nav class="navbar">
-    <div class="nav-brand">E-Commerce ShopBD</div>
+    <div class="nav-brand">🛍 EStore</div>
     <div class="nav-links">
-        <a href="catalogue.php">Browse</a>
+        <a href="../../S3/View/catalogue.php">Go To Shop</a>
         <a href="profile.php" class="active">My Profile</a>
-        <a href="my_orders.php">My Orders</a>
+        <a href="../../S4/Views/orders/my_orders.php">My Orders</a>
         <a href="../Controller/logout.php" class="btn btn-sm btn-outline">Logout</a>
     </div>
 </nav>
