@@ -1,0 +1,21 @@
+body {
+    background: #f5f7fb;
+}
+
+.card {
+    border-radius: 15px;
+}
+
+.sidebar {
+    position: sticky;
+    top: 0;
+}
+
+.badge {
+    padding: 10px 14px;
+    font-size: 14px;
+}
+
+table {
+    background: white;
+}
