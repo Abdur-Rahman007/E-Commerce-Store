@@ -6,54 +6,113 @@ The project uses an **MVC-style structure** with PHP controllers, models, and vi
 
 > **Project context:** This repository is organized into four student modules (`S1`–`S4`) that use a shared database. Each module was developed as an individually assigned feature.
 
-## Screenshots
+## Application screenshots
 
-### Registration
-Customers can register with a name, email, optional phone number, and password.
+### Customer experience
 
-![EStore registration form](assets/screenshots/registration.png)
+**1. Registration** — Create a customer account with name, email, optional phone and password.
 
-### Product catalogue
-The customer-facing catalogue displays products with categories, pricing, ratings, search, category filtering, and add-to-cart controls.
+![Registration screen](assets/screenshots/registration.png)
 
-![EStore product catalogue](assets/screenshots/catalogue.png)
+**2. Product catalogue** — Browse products with search, category selection, price, ratings and add-to-cart options.
 
-### Shopping cart
-Customers can view selected products, quantities, line totals and the cart total before checkout.
+![Customer product catalogue](assets/screenshots/catalogue.png)
 
-![EStore shopping cart](assets/screenshots/cart.png)
+**3. Shopping cart** — Review quantities, unit prices, line totals and the grand total before checkout.
 
-### Customer profile
-The profile screen provides personal information and saved shipping addresses.
+![Shopping cart](assets/screenshots/cart.png)
 
-![EStore customer profile](assets/screenshots/profile.png)
+**4. Customer profile** — Update personal details and manage saved shipping addresses.
 
-### Change password
-Customers can update their password by entering their current and new passwords.
+![Customer profile](assets/screenshots/profile.png)
 
-![EStore change-password form](assets/screenshots/change-password.png)
+**5. Change password** — Change a password by providing the current password and confirming the new one.
 
-## Project modules
+![Change password screen](assets/screenshots/change-password.png)
 
-| Module | Assigned work | Functionality |
+### Admin experience — Student 2
+
+**6. Admin dashboard** — Navigate to category, product and order management.
+
+![Admin dashboard](assets/screenshots/admin-dashboard.png)
+
+**7. Category list** — View categories, their parent categories and edit/delete actions.
+
+![Category list](assets/screenshots/category-list.png)
+
+**8. Add category** — Create a new category and optionally choose its parent.
+
+![Add category form](assets/screenshots/add-category.png)
+
+**9. Product list** — View product images, categories, prices, stock quantities, average ratings and availability badges.
+
+![Product list](assets/screenshots/product-list.png)
+
+**10. Add product** — Enter category, name, description, price, stock, image and availability information.
+
+![Add product form](assets/screenshots/add-product.png)
+
+## Team modules
+
+| Module | Assignment | Main responsibilities |
 | --- | --- | --- |
-| **S1** | User Authentication & Profile | Registration, login, remember-me sessions, profile editing, saved shipping addresses, password changes, and admin access control |
-| **S2** | Product & Category Management (Admin) | Nested category CRUD, product CRUD, image upload, low-stock indicators, average ratings, and AJAX availability toggle |
-| **S3** | Shopping Cart & Checkout (Customer) | Product browsing and filtering, AJAX cart operations, address and payment selection, checkout, and order confirmation |
-| **S4** | Order Management & Product Reviews | Customer order history, admin fulfilment/status updates, delivered-product reviews, and rating displays |
+| **S1 — Student 1** | Authentication & Profile | Registration, login, remember-me, sessions, customer profile, saved addresses and password changes |
+| **S2 — Student 2** | **Product & Category Management (Admin)** | **Category CRUD, product CRUD, image upload, stock alerts, rating display and AJAX availability toggle** |
+| **S3 — Student 3** | Shopping Cart & Checkout | Customer catalogue, AJAX search/filter, session cart, quantity adjustments, checkout and order confirmation |
+| **S4 — Student 4** | Order Management & Product Reviews | Customer order history, admin order status updates and reviews of delivered products |
 
-### S2 — Product & Category Management
+## Student 2 — My contribution
 
-The **Student 2 module** manages the catalogue used by the rest of the store:
+The **S2 module** provides the admin-facing tools that maintain the product catalogue used by customers.
 
-- Create, view, edit, and delete categories with **one level of parent/child nesting**.
-- Prevent deletion of categories that have child categories or linked products.
-- Create, view, edit, and delete products with name, description, category, price, stock quantity, and primary image.
-- Validate uploaded product images (JPEG or PNG, up to **3 MB**) and store them under `S2/public/uploads/products/` (or the upload directory configured in the implementation).
-- Prevent deletion of products already referenced by order items.
-- Highlight products with stock quantity **5 or below**.
-- Show average star ratings from the shared reviews table.
-- Change product availability using AJAX without reloading the page.
+### Category management
+
+- Create, list and edit categories.
+- Choose an optional parent category, supporting **one level of category nesting**.
+- Prevent deletion when a category still has child categories or associated products.
+
+### Product management
+
+- Create, list and edit products with a category, name, description, price and stock quantity.
+- Upload a primary image; the assignment specifies **JPEG/PNG, maximum 3 MB**, saved to `S2/public/uploads/products/`.
+- Prevent deletion of products referenced by existing `order_items`.
+- Highlight low-stock products when `stock_qty <= 5`.
+- Show the average rating computed from the shared `reviews` table.
+- Toggle product availability through JavaScript/AJAX without refreshing the entire page.
+
+**Data provided to other modules:** `categories` and `products` records, product availability and stock quantities, and primary image paths. Customer browsing and checkout depend on these records.
+
+### S2 folder structure
+
+```text
+S2/
+├── Controller/
+│   ├── JS/
+│   │   └── availability.js
+│   ├── CategoryController.php
+│   └── ProductController.php
+├── Model/
+│   ├── CategoryModel.php
+│   ├── ProductModel.php
+│   └── db.php
+├── public/
+│   └── uploads/
+│       └── products/
+└── View/
+    └── admin/
+        ├── dashboard.php
+        ├── dashboard.css
+        ├── categories/
+        │   ├── categoryList.php
+        │   ├── categoryForm.php
+        │   └── category.css
+        └── products/
+            ├── productList.php
+            ├── productForm.php
+            └── product.css
+```
+
+**MVC responsibilities:** Controllers handle requests, validation, redirects and AJAX responses; models handle database operations; views render pages, with styling in separate CSS files. `Model/db.php` contains the S2 database connection.
 
 ### How the modules connect
 
@@ -171,7 +230,12 @@ Register / Login (S1)
 
 The course specification calls for server-side form validation, authenticated access to protected pages, prepared database queries, MIME type/size checks for uploads, JSON responses from AJAX endpoints, and safeguards against deleting records used by other modules. Review these rules when testing the integrated application.
 
+## Screenshots and assets
+
+The images in this README are stored in [`assets/screenshots/`](assets/screenshots/). Keep this directory when uploading to GitHub; otherwise the embedded images will not render.
+
+> **Current screenshot note:** The catalogue and cart screenshots show a product image that does not load. Verify the stored image path and upload location before presenting this as a finished deployment.
+
 ## Academic context
 
 Developed as a **Web Technologies** course project by a four-member team. The tasks were individually assigned to Students 1–4, with **Student 2 responsible for Product & Category Management (Admin)**.
-
