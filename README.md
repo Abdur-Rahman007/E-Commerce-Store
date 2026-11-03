@@ -11,32 +11,27 @@ The project uses an **MVC-style structure** with PHP controllers, models, and vi
 ### Registration
 Customers can register with a name, email, optional phone number, and password.
 
-![EStore registration form](<img width="1347" height="597" alt="Screenshot 2026-11-03 234156" src="https://github.com/user-attachments/assets/4d83a3eb-a4d1-492f-970f-247eeb795f74" />
-)
+![EStore registration form](assets/screenshots/registration.png)
 
 ### Product catalogue
 The customer-facing catalogue displays products with categories, pricing, ratings, search, category filtering, and add-to-cart controls.
 
-![EStore product catalogue](<img width="1365" height="593" alt="Screenshot 2026-11-03 234243" src="https://github.com/user-attachments/assets/2ad16783-de40-470d-8b37-87ec3bc9da9c" />
-)
+![EStore product catalogue](assets/screenshots/catalogue.png)
 
 ### Shopping cart
 Customers can view selected products, quantities, line totals and the cart total before checkout.
 
-![EStore shopping cart](<img width="1365" height="600" alt="Screenshot 2026-11-03 234817" src="https://github.com/user-attachments/assets/3e724da0-f4da-4d27-a32f-7ff52e8e0218" />
-)
+![EStore shopping cart](assets/screenshots/cart.png)
 
 ### Customer profile
 The profile screen provides personal information and saved shipping addresses.
 
-![EStore customer profile](<img width="1365" height="591" alt="Screenshot 2026-11-03 234855" src="https://github.com/user-attachments/assets/92ef9b72-709a-446a-b28c-b300a4b081e1" />
-)
+![EStore customer profile](assets/screenshots/profile.png)
 
 ### Change password
 Customers can update their password by entering their current and new passwords.
 
-![EStore change-password form](<img width="1365" height="593" alt="Screenshot 2026-11-03 234907" src="https://github.com/user-attachments/assets/d2571fe1-d2a2-4508-a596-76fe693c4661" />
-)
+![EStore change-password form](assets/screenshots/change-password.png)
 
 ## Project modules
 
